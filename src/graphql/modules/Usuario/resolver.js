@@ -28,6 +28,14 @@ module.exports = {
 
   Mutation: {
     criarUsuario(_, args) {
+      const { email } = args;
+
+      const usuarioExistente = db.usuarios.some((u) => u.email === email);
+
+      if (usuarioExistente) {
+        throw new Error(`Usuario Existente: ${args.nome}`);
+      }
+
       const novoUsuario = {
         ...args,
         id: geradorDeId(db.usuarios),
