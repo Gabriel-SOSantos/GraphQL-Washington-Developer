@@ -20,8 +20,12 @@ module.exports = {
     },
   },
   Query: {
-    usuario(obj, args) {
-      return db.usuarios.find((usuario) => usuario.id === args.id);
+    usuario(obj, { filtro }) {
+      if (filtro.id) {
+        return db.usuarios.find((usuario) => usuario.id === filtro.id);
+      } else {
+        return db.usuarios.find((usuario) => usuario.email === filtro.email);
+      }
     },
     usuarios: () => db.usuarios,
   },
@@ -60,5 +64,19 @@ module.exports = {
 
       return novoUsuario;
     },
+
+    deletarUsuario(_, { filtro: { id, email } }) {
+      return deletarUsuarioFiltro(id ? { id: id } : { email });
+    },
   },
 };
+
+function deletarUsuarioFiltro(filtro) {
+  const chave = Object.keys(filtro)[0];
+  const valor = Object.values(filtro)[0];
+
+  const usuarioEncontrado = db.usuarios.find((u) => u[chave] === valor);
+  db.usuarios = db.usuarios.filter((u) => u[chave] !== valor);
+
+  return !!usuarioEncontrado;
+}
