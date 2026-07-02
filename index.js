@@ -1,11 +1,11 @@
 const { ApolloServer } = require("apollo-server");
 const graphql = require("./src/graphql");
-const UsuarioCadastroService = require("./src/services/UsuarioCadastroService");
+const GitHubService = require("./src/services/GitHub.service");
 
 const server = new ApolloServer({
   ...graphql,
-  context: () => ({
-    UsuarioCadastroService: UsuarioCadastroService,
+  dataSources: () => ({
+    gitHubService: GitHubService,
   }),
 });
 
