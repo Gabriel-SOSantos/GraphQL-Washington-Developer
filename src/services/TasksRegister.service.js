@@ -1,26 +1,30 @@
 const db = require("../db");
+const TaskNotFoundError = require("../errors/TaskNotFoundError");
+const NoPermissionError = require("../errors/NoPermissionError");
+const UserNotExists = require("../errors/UserNotExists");
 
 class TaskRegisterService {
   async getTasks(user_id) {
     return await db("tasks").where({ user_id });
   }
 
-  async showTaskById(user_id, id) {
-    await this.getTaskById(user_id, id);
-    return await db("tasks").where({ id }).first();
-  }
-
   async getTaskById(user_id, id) {
     const task = await db("tasks").where({ id }).first();
 
-    if (!task) throw new Error("Tarefa não encontrada!");
+    if (!task) throw new TaskNotFoundError("Tarefa não encontrada!");
 
     if (task.user_id != user_id) {
-      throw new Error("Você não tem permissão!");
+      throw new NoPermissionError("Você não tem permissão!");
     }
+
+    return task;
   }
 
   async addTask(user_id, data) {
+    const user = await db("users").where({ id: user_id }).first();
+
+    if (!user) throw new UserNotExists("Usuario não criado");
+
     return await (
       await db("tasks")
         .insert({ user_id, ...data })

@@ -5,7 +5,7 @@ module.exports = {
     },
 
     async task(_, { id }, { dataSources, user_id }) {
-      return await dataSources.tasksRegisterService.showTaskById(user_id, id);
+      return await dataSources.tasksRegisterService.getTaskById(user_id, id);
     },
   },
 
