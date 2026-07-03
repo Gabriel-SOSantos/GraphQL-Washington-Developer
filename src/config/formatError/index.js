@@ -1,6 +1,7 @@
 const NoPermissionError = require("../../errors/NoPermissionError");
 const TaskNotFoundError = require("../../errors/TaskNotFoundError");
 const UserNotExists = require("../../errors/UserNotExists");
+const UserNotFoundError = require("../../errors/UserNotFoundError");
 
 module.exports = (error) => {
   if (error.originalError instanceof NoPermissionError) {
@@ -10,6 +11,9 @@ module.exports = (error) => {
     return new Error(error.message);
   }
   if (error.originalError instanceof UserNotExists) {
+    return new Error(error.message);
+  }
+  if (error.originalError instanceof UserNotFoundError) {
     return new Error(error.message);
   }
 
